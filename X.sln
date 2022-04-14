@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTKAudio_Desktop_2019
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VGP230", "VGP230", "{6D1776DF-CA8F-46C8-A402-BD2CFFEB01BD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceShooter", "SpaceShooter\SpaceShooter.vcxproj", "{63D0D236-6A7F-4111-BBE9-3BE1122B5403}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -67,6 +69,14 @@ Global
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5}.Release|x64.Build.0 = Release|x64
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5}.Release|x86.ActiveCfg = Release|Win32
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5}.Release|x86.Build.0 = Release|Win32
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Debug|x64.ActiveCfg = Debug|x64
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Debug|x64.Build.0 = Debug|x64
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Debug|x86.ActiveCfg = Debug|Win32
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Debug|x86.Build.0 = Debug|Win32
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Release|x64.ActiveCfg = Release|x64
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Release|x64.Build.0 = Release|x64
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Release|x86.ActiveCfg = Release|Win32
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,19 +87,9 @@ Global
 		{BFF9C813-01AF-43B3-A23E-2C62F332B994} = {856ED680-E9A4-400F-ADFF-D3C492DCA608}
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E} = {856ED680-E9A4-400F-ADFF-D3C492DCA608}
 		{4F150A30-CECB-49D1-8283-6A3F57438CF5} = {856ED680-E9A4-400F-ADFF-D3C492DCA608}
+		{63D0D236-6A7F-4111-BBE9-3BE1122B5403} = {6D1776DF-CA8F-46C8-A402-BD2CFFEB01BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2D84BED7-7031-4090-B4D3-57A9E4C0998B}
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://ptychan.visualstudio.com/
-		SccProjectUniqueName0 = X\\External\\ImGui\\ImGui.vcxproj
-		SccProjectTopLevelParentUniqueName0 = X.sln
-		SccProjectName0 = X/External/ImGui
-		SccAuxPath0 = https://ptychan.visualstudio.com
-		SccLocalPath0 = X\\External\\ImGui
-		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 	EndGlobalSection
 EndGlobal

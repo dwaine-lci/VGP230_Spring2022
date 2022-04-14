@@ -20,10 +20,14 @@ struct Vector2
 	constexpr Vector2(float f) noexcept : Vector2{ f, f } {}
 	constexpr Vector2(float x, float y) noexcept : x{ x }, y{ y } {}
 
+	static float SqrMagnitude(const Vector2& vec) { return (vec.x * vec.x + vec.y * vec.y); }
+	static float Magnitude(const Vector2& vec)	{ return sqrt(SqrMagnitude(vec)); }
 	static Vector2 Zero()						{ return Vector2(); }
 	static Vector2 One()						{ return Vector2(1.0f, 1.0f); }
 	static Vector2 XAxis()						{ return Vector2(1.0f, 0.0f); }
 	static Vector2 YAxis()						{ return Vector2(0.0f, 1.0f); }
+	static Vector2 Forward(float rot)			{ return Vector2(cos(rot), -sin(rot)); }
+	static Vector2 Forward(const Vector2& vec)  { float mag = Magnitude(vec); return Vector2(vec.x / mag, vec.y / mag); }
 
 	Vector2 operator-() const					{ return Vector2(-x, -y); }
 	Vector2 operator+(const Vector2& rhs) const { return Vector2(x + rhs.x, y + rhs.y); }
