@@ -26,7 +26,7 @@ struct Vector2
 	static Vector2 One()						{ return Vector2(1.0f, 1.0f); }
 	static Vector2 XAxis()						{ return Vector2(1.0f, 0.0f); }
 	static Vector2 YAxis()						{ return Vector2(0.0f, 1.0f); }
-	static Vector2 Forward(float rot)			{ return Vector2(cos(rot), -sin(rot)); }
+	static Vector2 Forward(float rot)			{ return Vector2(sin(rot), -cos(rot)); }
 	static Vector2 Forward(const Vector2& vec)  { float mag = Magnitude(vec); return Vector2(vec.x / mag, vec.y / mag); }
 
 	Vector2 operator-() const					{ return Vector2(-x, -y); }

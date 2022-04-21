@@ -45,8 +45,7 @@ void Bullet::Render()
 {
 	if (_lifeTime > 0.0f && _textureId != 0)
 	{
-		float rotationCorrection = (X::Math::kDegToRad * 90.0f) - _rotation;
-		X::DrawSprite(_textureId, _position, rotationCorrection);
+		X::DrawSprite(_textureId, _position, _rotation);
 	}
 }
 void Bullet::Cleanup()

@@ -65,9 +65,8 @@ void Ship::FireBullet()
 	_nextBulletIndex = (_nextBulletIndex + 1) % _bullets.size();
 
 	const float offset = 60.0f;
-	float rotationCorrection = (X::Math::kDegToRad * 90.0f) - _rotation;
-	X::Math::Vector2 firePos = _position + (X::Math::Vector2::Forward(rotationCorrection) * offset);
-	firedBullet->Activate(_bulletType, firePos, rotationCorrection, 2.0f);
+	X::Math::Vector2 firePos = _position + (X::Math::Vector2::Forward(_rotation) * offset);
+	firedBullet->Activate(_bulletType, firePos, _rotation, 2.0f);
 }
 
 void Ship::SwitchBullet()
