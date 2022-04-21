@@ -1,5 +1,7 @@
 #include "Game.h"
 #include "Ship.h"
+#include "BulletPool.h"
+#include "GameStates.h"
 
 Game::Game()
 {
@@ -12,7 +14,11 @@ Game::~Game()
 
 void Game::Init()
 {
-	XASSERT(AddEntity(new Ship(this)), "failed to add ship");
+	int bulletPoolSize = 20;
+	BulletPool* bulletPool = new BulletPool(bulletPoolSize);
+	XASSERT(AddEntity(bulletPool), "failed to add bullet pool");
+	XASSERT(AddEntity(new Ship(bulletPool)), "failed to add ship");
+	XASSERT(AddEntity(new GameStates()), "failed to add GameStates");
 
 	for (auto e : _entities)
 	{

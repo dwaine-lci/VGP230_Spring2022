@@ -1,14 +1,9 @@
 #pragma once
 #include "Entity.h"
 #include "XEngine.h"
+#include "Enums.h"
 
-enum class BulletType
-{
-	BULLET_01,
-	BULLET_02
-};
-
-class Bullet : Entity
+class Bullet : public Entity
 {
 public:
 	Bullet();

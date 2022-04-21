@@ -149,14 +149,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="BulletPool.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameHUD.cpp" />
+    <ClCompile Include="GameStates.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="BulletPool.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameHUD.h" />
+    <ClInclude Include="GameStates.h" />
     <ClInclude Include="Ship.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

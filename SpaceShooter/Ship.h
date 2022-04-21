@@ -1,13 +1,15 @@
 #pragma once
 #include "XEngine.h"
 #include "Entity.h"
-#include "Bullet.h"
+#include "Enums.h"
+
 class Game;
+class BulletPool;
 
 class Ship : public Entity
 {
 public:
-	Ship(Game* game);
+	Ship(BulletPool* bulletPool);
 	virtual ~Ship();
 
 	virtual void Init() override;
@@ -25,6 +27,5 @@ private:
 	float _rotation;
 
 	BulletType _bulletType;
-	int _nextBulletIndex;
-	std::vector<Bullet*> _bullets;
+	BulletPool* _bulletPool;
 };

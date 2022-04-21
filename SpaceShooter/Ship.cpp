@@ -1,8 +1,10 @@
 #include "Ship.h"
+#include "Bullet.h"
+#include "BulletPool.h"
 #include "Game.h"
 
-Ship::Ship(Game* game)
-	: _game(game)
+Ship::Ship(BulletPool* bulletPool)
+	: _bulletPool(bulletPool)
 {
 
 }
@@ -19,15 +21,6 @@ void Ship::Init()
 	_rotation = 0.0f;
 	_position.x = X::GetScreenWidth() * 0.5f;
 	_position.y = X::GetScreenHeight() * 0.5f;
-
-	_nextBulletIndex = 0;
-	const int poolSize = 30;
-	for (int i = 0; i < poolSize; ++i)
-	{
-		Bullet* bullet = new Bullet();
-		_bullets.push_back(bullet);
-		_game->AddEntity((Entity*)bullet);
-	}
 }
 void Ship::Update(float deltaTime)
 {
@@ -61,8 +54,8 @@ void Ship::Cleanup()
 
 void Ship::FireBullet()
 {
-	Bullet* firedBullet = _bullets[_nextBulletIndex];
-	_nextBulletIndex = (_nextBulletIndex + 1) % _bullets.size();
+	XASSERT(_bulletPool != nullptr, "bullet pool does not exist");
+	Bullet* firedBullet = _bulletPool->GetNextBullet();
 
 	const float offset = 60.0f;
 	X::Math::Vector2 firePos = _position + (X::Math::Vector2::Forward(_rotation) * offset);
