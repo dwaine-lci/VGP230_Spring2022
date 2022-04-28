@@ -2,7 +2,8 @@
 #include "Bullet.h"
 
 BulletPool::BulletPool(int size)
-	: _nextBulletIndex(0)
+	: Entity(EntityType::BulletPool)
+	, _nextBulletIndex(0)
 {
 	_bullets.resize(size);
 }

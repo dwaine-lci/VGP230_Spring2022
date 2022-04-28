@@ -16,6 +16,7 @@ public:
 	void Cleanup();
 
 	bool AddEntity(Entity* entity);
+	const std::vector<Entity*>& GetEntities() { return _entities; }
 
 private:
 	std::vector<Entity*> _entities;
