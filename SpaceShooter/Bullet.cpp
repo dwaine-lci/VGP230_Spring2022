@@ -26,6 +26,7 @@ void Bullet::Activate(Game* game, Entity* owner, BulletType bulletType, const X:
 	_position = position;
 	_rotation = rotation;
 	_lifeTime = lifeTime;
+	X::PlaySoundOneShot(_photonShot);
 }
 
 void Bullet::Init()
@@ -34,6 +35,8 @@ void Bullet::Init()
 	_position = X::Math::Vector2::Zero();	
 	_rotation = 0.0f;	
 	_lifeTime = 0.0f;
+
+	_photonShot = X::LoadSound("photongun1.wav");
 }
 void Bullet::Update(float deltaTime)
 {

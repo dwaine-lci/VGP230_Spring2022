@@ -29,7 +29,11 @@ private:
 	Game* _game;
 	X::TextureId _textureId;
 	X::Math::Vector2 _position;
+	X::Math::Vector2 _startPosition;
+	X::Math::Vector2 _targetPosition;
+	float _moveRadius;
 	float _rotation;
+	float _randomMoveTime;
 	int _health;
 	float _hitRadius;
 

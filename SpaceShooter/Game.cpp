@@ -55,6 +55,10 @@ void Game::Render()
 	{
 		e->Render();
 	}
+	const char hellowWorld[255] = "HELLO WORLD";
+	float size = 0.0f;
+	float width = X::GetTextWidth(hellowWorld, size);
+	X::DrawScreenText(hellowWorld, (X::GetScreenWidth() - width) * 0.5f, 0.0f, size, X::Colors::Red);
 }
 
 void Game::Cleanup()

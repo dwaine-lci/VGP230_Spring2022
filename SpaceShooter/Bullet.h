@@ -23,4 +23,6 @@ private:
 	X::Math::Vector2 _position;
 	float _rotation;
 	float _lifeTime;
+
+	X::SoundId _photonShot;
 };

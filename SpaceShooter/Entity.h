@@ -15,6 +15,7 @@ public:
 	virtual bool IsAlive() { return true; }
 	virtual bool CheckHit(const X::Math::Vector2& pos) { return false; }
 	virtual void OnHit(int damage) {}
+	virtual const X::Math::Vector2& GetPosition() { return X::Math::Vector2::Zero(); }
 protected:
 	EntityType _entityType;
 };

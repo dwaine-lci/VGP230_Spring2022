@@ -26,6 +26,7 @@ void BulletPool::Init()
 	for (int i = 0; i < _bullets.size(); ++i)
 	{
 		_bullets[i] = new Bullet();
+		_bullets[i]->Init();
 	}
 }
 void BulletPool::Update(float deltaTime)

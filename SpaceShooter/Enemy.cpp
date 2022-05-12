@@ -23,10 +23,14 @@ void Enemy::Init()
 	_health = 10;
 	_hitRadius = 30.0f;
 	_rotation = 0.0f;
+	_targetPosition;
+	_moveRadius = 100;
 }
 void Enemy::SetPosition(X::Math::Vector2& pos)
 {
 	_position = pos;
+	_startPosition = pos;
+	_targetPosition = pos;
 }
 void Enemy::Update(float deltaTime)
 {
@@ -34,6 +38,37 @@ void Enemy::Update(float deltaTime)
 	{
 		const float rotationSpeed = X::Math::kPi * 0.5f;
 
+		if (_randomMoveTime <= 0.0f || X::Math::MagnitudeSqr(_position - _targetPosition) < 10.0f)
+		{
+			Entity* ship = nullptr;
+			auto entities = _game->GetEntities();
+			for (auto e : entities)
+			{
+				if (e->GetType() == EntityType::Ship)
+				{
+					ship = e;
+					break;
+				}
+			}
+			if (ship != NULL)
+			{
+				_targetPosition = ship->GetPosition();
+				_randomMoveTime = 99999;
+			}
+			else
+			{
+				X::Math::Vector2 randDir = X::RandomUnitCircle();
+				_targetPosition = _startPosition + (randDir * _moveRadius);
+				_randomMoveTime = X::RandomFloat(1.0f, 2.0f);
+			}
+		}
+		else
+		{
+			const float speed = 50.0f;
+			X::Math::Vector2 moveDir = X::Math::Normalize(_targetPosition - _position);
+			_position += moveDir * speed * deltaTime;
+			_randomMoveTime -= deltaTime;
+		}
 		//if (X::IsKeyDown(X::Keys::LEFT))
 		//{
 		//	_rotation -= rotationSpeed * deltaTime;

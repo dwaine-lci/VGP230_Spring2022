@@ -19,6 +19,7 @@ public:
 	virtual bool IsAlive() override { return _health > 0; }
 	virtual bool CheckHit(const X::Math::Vector2& pos) override;
 	virtual void OnHit(int damage) override;
+	virtual const X::Math::Vector2& GetPosition() override { return _position; }
 
 	void FireBullet();
 	void SwitchBullet();
