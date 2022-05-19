@@ -7,6 +7,7 @@ struct TileData
 	X::TextureId textureId;
 	TileType tileType;
 	X::Math::Vector2 position;
+	X::Math::Rect rect;
 	int xIndex;
 	int yIndex;
 

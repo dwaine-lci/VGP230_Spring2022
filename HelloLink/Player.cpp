@@ -27,37 +27,44 @@ void Player::Update(float deltaTime)
 	playerRect.bottom = _position.y + halfHeight;
 
 	const float speed = 1000.0f;
-	X::Math::Vector2 direction(0.0f, 0.0f);
+	X::Math::Vector2 displacement(0.0f, 0.0f);
 	if (X::IsKeyDown(X::Keys::LEFT))
 	{
-		direction.x = -speed * deltaTime;
+		displacement.x = -speed * deltaTime;
 	}
 	else if (X::IsKeyDown(X::Keys::RIGHT))
 	{
-		direction.x = speed * deltaTime;
+		displacement.x = speed * deltaTime;
 	}
 	if (X::IsKeyDown(X::Keys::UP))
 	{
-		direction.y = -speed * deltaTime;
+		displacement.y = -speed * deltaTime;
 	}
 	else if (X::IsKeyDown(X::Keys::DOWN))
 	{
-		direction.y = speed * deltaTime;
+		displacement.y = speed * deltaTime;
 	}
-	if (X::Math::MagnitudeSqr(direction) > 0.0f)
+	if (X::Math::MagnitudeSqr(displacement) > 0.0f)
 	{
-		direction = X::Math::Normalize(direction);
-
-		if (TileMap::Get()->CanMoveToDirection(playerRect, direction))
+		if (TileMap::Get()->CanMoveToDirection(playerRect, displacement))
 		{
-			_position += direction;
+			_position += displacement;
 		}
 	}
 }
 
 void Player::Render()
 {
+	float halfWidth = X::GetSpriteWidth(_textureId) * 0.5f;
+	float halfHeight = X::GetSpriteHeight(_textureId) * 0.5f;
+	X::Math::Rect playerRect;
+	playerRect.left = _position.x - halfWidth;
+	playerRect.right = _position.x + halfWidth;
+	playerRect.top = _position.y - halfHeight;
+	playerRect.bottom = _position.y + halfHeight;
+
 	X::DrawSprite(_textureId, _position);
+	X::DrawScreenRect(playerRect, X::Colors::Green);
 }
 
 void Player::Cleanup()

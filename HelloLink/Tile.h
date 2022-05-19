@@ -19,6 +19,9 @@ public:
 
 	bool IsWalkable();
 
+	const X::Math::Vector2& GetPosition();
+	const X::Math::Rect& GetRect();
+
 private:
 	TileData _data;
 };

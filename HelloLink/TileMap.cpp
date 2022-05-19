@@ -93,6 +93,8 @@ void TileMap::ReloadMap()
 		newData.yIndex = i / _tileCols;
 		newData.position.x = tileWidth * newData.xIndex + offset.x;
 		newData.position.y = tileHeight * newData.yIndex + offset.y;
+		newData.rect.max = newData.position + offset;
+		newData.rect.min = newData.position - offset;
 
 		while (_tiles.size() <= i)
 		{
@@ -104,10 +106,15 @@ void TileMap::ReloadMap()
 bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vector2& direction)
 {
 	bool checkX = true;
-	bool blocked = false;
+	float offsetX = 0.0f;
+	float offsetY = 0.0f;
+	float tileWidth = X::GetSpriteWidth(cMapTextures[0]);
+	float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
+	float totalWidth = tileWidth * (float)_tileCols;
+	float totalHeight = tileHeight * (float)_tileRows;
+	X::Math::Rect mapRect(0.0f, 0.0f, totalWidth, totalHeight);
 	for (int i = 0; i < 2; ++i)
 	{
-		blocked = false;
 		checkX = i == 0;
 		// iterate through the tiles and see if the player can go that way
 		X::Math::Vector2 checkDir(0.0f, 0.0f);
@@ -122,10 +129,6 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		X::Math::Vector2 minValues(movingObject.left + checkDir.x, movingObject.top + checkDir.y);
 		X::Math::Vector2 maxValues(movingObject.right + checkDir.x, movingObject.bottom + checkDir.y);
 
-		float tileWidth = X::GetSpriteWidth(cMapTextures[0]);
-		float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
-		float totalWidth = tileWidth * (float)_tileCols;
-		float totalHeight = tileHeight * (float)_tileRows;
 
 		// Top Left Point
 		int xPos = (int)floor((minValues.x / totalWidth) * _tileCols);
@@ -133,7 +136,21 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		int index = (yPos * _tileCols) + xPos;
 		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
 		{
-			blocked = true;
+			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
+			if (checkX)
+			{
+				if (direction.x < 0.0f)
+				{
+					offsetX = X::Math::Max(offsetX, tileRect.max.x - minValues.x);
+				}
+			}
+			else
+			{
+				if (direction.y < 0.0f)
+				{
+					offsetY = X::Math::Max(offsetY, tileRect.max.y - minValues.y);
+				}
+			}
 		}
 
 		// Top Right Point
@@ -142,7 +159,21 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		index = (yPos * _tileCols) + xPos;
 		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
 		{
-			blocked = true;
+			X::Math::Rect tileRect = (index > 0 && index < _tiles.size())? _tiles[index].GetRect() : mapRect;
+			if (checkX)
+			{
+				if (direction.x > 0.0f)
+				{
+					offsetX = X::Math::Max(offsetX, maxValues.x - tileRect.min.x);
+				}
+			}
+			else
+			{
+				if (direction.y < 0.0f)
+				{
+					offsetY = X::Math::Max(offsetY, tileRect.max.y - minValues.y);
+				}
+			}
 		}
 
 		// Bottom Right Point
@@ -151,7 +182,21 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		index = (yPos * _tileCols) + xPos;
 		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
 		{
-			blocked = true;
+			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
+			if (checkX)
+			{
+				if (direction.x > 0.0f)
+				{
+					offsetX = X::Math::Max(offsetX, maxValues.x - tileRect.min.x);
+				}
+			}
+			else
+			{
+				if (direction.y > 0.0f)
+				{
+					offsetY = X::Math::Max(offsetY, maxValues.y - tileRect.min.y);
+				}
+			}
 		}
 
 		// Bottom Left Point
@@ -160,19 +205,52 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		index = (yPos * _tileCols) + xPos;
 		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
 		{
-			blocked = true;
-		}
-
-		if (blocked)
-		{
+			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
 			if (checkX)
 			{
-				direction.x = 0.0f;
+				if (direction.x < 0.0f)
+				{
+					offsetX = X::Math::Max(offsetX, tileRect.max.x - minValues.x);
+				}
 			}
 			else
 			{
-				direction.y = 0.0f;
+				if (direction.y > 0.0f)
+				{
+					offsetY = X::Math::Max(offsetY, maxValues.y - tileRect.min.y);
+				}
 			}
+		}
+	}
+
+	if (offsetX > 0.0f && offsetY > 0.0f)
+	{
+		if (offsetX < offsetY)
+		{
+			offsetY = 0.0f;
+		}
+		else
+		{
+			offsetX = 0.0f;
+		}
+	}
+	if (offsetX > 0.0f || offsetY > 0.0f)
+	{
+		if (direction.x > 0.0f)
+		{
+			direction.x = X::Math::Max(direction.x - offsetX, 0.0f);
+		}
+		else if (direction.x < 0.0f)
+		{
+			direction.x = X::Math::Min(direction.x + offsetX, 0.0f);
+		}
+		if (direction.y > 0.0f)
+		{
+			direction.y = X::Math::Max(direction.y - offsetY, 0.0f);
+		}
+		else if (direction.y < 0.0f)
+		{
+			direction.y = X::Math::Min(direction.y + offsetY, 0.0f);
 		}
 	}
 
