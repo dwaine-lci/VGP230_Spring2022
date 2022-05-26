@@ -51,12 +51,12 @@ void Enemy::Update(float deltaTime)
 			{
 				float halfWidth = X::GetSpriteWidth(_textureId) * 0.5f;
 				float halfHeight = X::GetSpriteHeight(_textureId) * 0.5f;
-				const float edgeBuffer = 5.0f;
+				const float edgeBuffer = 40.0f;
 				X::Math::Rect enemyRect;
 				enemyRect.left = _position.x - halfWidth + edgeBuffer;
 				enemyRect.right = _position.x + halfWidth - edgeBuffer;
 				enemyRect.top = _position.y - halfHeight + edgeBuffer;
-				enemyRect.bottom = _position.y + halfHeight;
+				enemyRect.bottom = _position.y + halfHeight - edgeBuffer;
 				if (TileMap::Get()->CanMoveToDirection(enemyRect, displacement))
 				{
 					_position += displacement;
@@ -70,7 +70,17 @@ void Enemy::Render()
 	if (_health > 0)
 	{
 		X::DrawSprite(_textureId, _position, _rotation);
-		X::DrawScreenCircle(_position, _hitRadius, X::Colors::Red);
+
+		float halfWidth = X::GetSpriteWidth(_textureId) * 0.5f;
+		float halfHeight = X::GetSpriteHeight(_textureId) * 0.5f;
+		const float edgeBuffer = 40.0f;
+		X::Math::Rect playerRect;
+		playerRect.left = _position.x - halfWidth + edgeBuffer;
+		playerRect.right = _position.x + halfWidth - edgeBuffer;
+		playerRect.top = _position.y - halfHeight + edgeBuffer;
+		playerRect.bottom = _position.y + halfHeight - edgeBuffer;
+
+		X::DrawScreenRect(playerRect, X::Colors::Green);
 	}
 }
 void Enemy::Cleanup()
