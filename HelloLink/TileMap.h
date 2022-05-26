@@ -14,6 +14,7 @@ public:
 
 	void ReloadMap();
 	bool CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vector2& displacement);
+	bool HitsBlockableObject(X::Math::Vector2& position);
 
 private:
 	TileMap();
@@ -21,5 +22,5 @@ private:
 
 	int _tileRows;
 	int _tileCols;
-	std::vector<Tile> _tiles;
+	std::map<TileType, std::vector<Tile>> _tiles;
 };

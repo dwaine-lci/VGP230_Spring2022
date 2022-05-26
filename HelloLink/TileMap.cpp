@@ -47,18 +47,22 @@ void TileMap::Update(float deltaTime)
 		ReloadMap();
 	}
 
-	int tileCount = _tileCols * _tileRows;
-	for (int i = 0; i < tileCount; ++i)
+	for (auto tileType : _tiles)
 	{
-		_tiles[i].Update(deltaTime);
+		for (auto tile : tileType.second)
+		{
+			tile.Update(deltaTime);
+		}
 	}
 }
 void TileMap::Render()
 {
-	int tileCount = _tileCols * _tileRows;
-	for (int i = 0; i < tileCount; ++i)
+	for (auto tileType : _tiles)
 	{
-		_tiles[i].Render();
+		for (auto tile : tileType.second)
+		{
+			tile.Render();
+		}
 	}
 }
 void TileMap::Cleanup()
@@ -77,30 +81,29 @@ void TileMap::ReloadMap()
 	inputStream >> _tileCols;
 	inputStream >> _tileRows;
 
+	_tiles.clear();
 	float tileWidth = X::GetSpriteWidth(cMapTextures[0]);
 	float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
 	X::Math::Vector2 offset(tileWidth * 0.5f, tileHeight * 0.5f);
 	int numTiles = _tileCols * _tileRows;
-	for (int i = 0; i < numTiles; ++i)
+	int dataType = 0;
+	int tileIndex = 0;
+	while(inputStream >> dataType)
 	{
-		int dataType = 0;
-		inputStream >> dataType;
-
 		TileData newData;
 		newData.textureId = cMapTextures[dataType];
 		newData.tileType = (dataType < 4)? TileType::Walkable : TileType::Wall;
-		newData.xIndex = i % _tileCols;
-		newData.yIndex = i / _tileCols;
+		newData.xIndex = tileIndex % _tileCols;
+		newData.yIndex = tileIndex / _tileCols;
 		newData.position.x = tileWidth * newData.xIndex + offset.x;
 		newData.position.y = tileHeight * newData.yIndex + offset.y;
 		newData.rect.max = newData.position + offset;
 		newData.rect.min = newData.position - offset;
 
-		while (_tiles.size() <= i)
-		{
-			_tiles.push_back(Tile());
-		}
-		_tiles[i].Init(newData);
+		Tile newTile;
+		newTile.Init(newData);
+		_tiles[newData.tileType].push_back(newTile);
+		++tileIndex;
 	}
 }
 bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vector2& direction)
@@ -112,6 +115,7 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 	float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
 	float totalWidth = tileWidth * (float)_tileCols;
 	float totalHeight = tileHeight * (float)_tileRows;
+	X::Math::Rect moveRect;
 	X::Math::Rect mapRect(0.0f, 0.0f, totalWidth, totalHeight);
 	for (int i = 0; i < 2; ++i)
 	{
@@ -121,119 +125,60 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 		if (checkX)
 		{
 			checkDir.x = direction.x;
+			if (direction.x == 0.0f)
+			{
+				continue;
+			}
 		}
 		else
 		{
 			checkDir.y = direction.y;
-		}
-		X::Math::Vector2 minValues(movingObject.left + checkDir.x, movingObject.top + checkDir.y);
-		X::Math::Vector2 maxValues(movingObject.right + checkDir.x, movingObject.bottom + checkDir.y);
-
-
-		// Top Left Point
-		int xPos = (int)floor((minValues.x / totalWidth) * _tileCols);
-		int yPos = (int)floor((minValues.y / totalHeight) * _tileRows);
-		int index = (yPos * _tileCols) + xPos;
-		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
-		{
-			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
-			if (checkX)
+			if (direction.y == 0.0f)
 			{
-				if (direction.x < 0.0f)
-				{
-					offsetX = X::Math::Max(offsetX, tileRect.max.x - minValues.x);
-				}
-			}
-			else
-			{
-				if (direction.y < 0.0f)
-				{
-					offsetY = X::Math::Max(offsetY, tileRect.max.y - minValues.y);
-				}
+				continue;
 			}
 		}
+		moveRect.min = X::Math::Vector2(movingObject.left + checkDir.x, movingObject.top + checkDir.y);
+		moveRect.max = X::Math::Vector2(movingObject.right + checkDir.x, movingObject.bottom + checkDir.y);
 
-		// Top Right Point
-		xPos = (int)floor((maxValues.x / totalWidth) * _tileCols);
-		yPos = (int)floor((minValues.y / totalHeight) * _tileRows);
-		index = (yPos * _tileCols) + xPos;
-		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
+		for(auto tile : _tiles[TileType::Wall])
 		{
-			X::Math::Rect tileRect = (index > 0 && index < _tiles.size())? _tiles[index].GetRect() : mapRect;
-			if (checkX)
+			const X::Math::Rect& tileRect = tile.GetRect();
+			if (!tile.IsWalkable() && X::Math::Intersect(moveRect, tileRect))
 			{
-				if (direction.x > 0.0f)
+				if (checkX)
 				{
-					offsetX = X::Math::Max(offsetX, maxValues.x - tileRect.min.x);
+					if (checkDir.x > 0.0f)
+					{
+						offsetX = X::Math::Min(direction.x, moveRect.max.x - tileRect.min.x + 0.5f);
+					}
+					else if (checkDir.x < 0.0f)
+					{
+						offsetX = X::Math::Min(X::Math::Abs(direction.x), tileRect.max.x - moveRect.min.x + 0.5f);
+					}
 				}
-			}
-			else
-			{
-				if (direction.y < 0.0f)
+				else
 				{
-					offsetY = X::Math::Max(offsetY, tileRect.max.y - minValues.y);
-				}
-			}
-		}
-
-		// Bottom Right Point
-		xPos = (int)floor((maxValues.x / totalWidth) * _tileCols);
-		yPos = (int)floor((maxValues.y / totalHeight) * _tileRows);
-		index = (yPos * _tileCols) + xPos;
-		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
-		{
-			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
-			if (checkX)
-			{
-				if (direction.x > 0.0f)
-				{
-					offsetX = X::Math::Max(offsetX, maxValues.x - tileRect.min.x);
-				}
-			}
-			else
-			{
-				if (direction.y > 0.0f)
-				{
-					offsetY = X::Math::Max(offsetY, maxValues.y - tileRect.min.y);
-				}
-			}
-		}
-
-		// Bottom Left Point
-		xPos = (int)floor((minValues.x / totalWidth) * _tileCols);
-		yPos = (int)floor((maxValues.y / totalHeight) * _tileRows);
-		index = (yPos * _tileCols) + xPos;
-		if (index < 0 || index >= _tiles.size() || !_tiles[index].IsWalkable())
-		{
-			X::Math::Rect tileRect = (index > 0 && index < _tiles.size()) ? _tiles[index].GetRect() : mapRect;
-			if (checkX)
-			{
-				if (direction.x < 0.0f)
-				{
-					offsetX = X::Math::Max(offsetX, tileRect.max.x - minValues.x);
-				}
-			}
-			else
-			{
-				if (direction.y > 0.0f)
-				{
-					offsetY = X::Math::Max(offsetY, maxValues.y - tileRect.min.y);
+					if (checkDir.y > 0.0f)
+					{
+						offsetY = X::Math::Min(direction.y, moveRect.max.y - tileRect.min.y + 0.5f);
+					}
+					else if (checkDir.y < 0.0f)
+					{
+						offsetY = X::Math::Min(X::Math::Abs(direction.y), tileRect.max.y - moveRect.min.y + 0.5f);
+					}
 				}
 			}
 		}
 	}
-
-	if (offsetX > 0.0f && offsetY > 0.0f)
+	moveRect.min = X::Math::Vector2(movingObject.left + direction.x, movingObject.top + direction.y);
+	moveRect.max = X::Math::Vector2(movingObject.right + direction.x, movingObject.bottom + direction.y);
+	if (moveRect.min.x <= mapRect.min.x || moveRect.min.y <= mapRect.min.y
+		|| moveRect.max.x >= mapRect.max.x || moveRect.max.y >= mapRect.max.y)
 	{
-		if (offsetX < offsetY)
-		{
-			offsetY = 0.0f;
-		}
-		else
-		{
-			offsetX = 0.0f;
-		}
+		return false;
 	}
+
 	if (offsetX > 0.0f || offsetY > 0.0f)
 	{
 		if (direction.x > 0.0f)
@@ -255,4 +200,18 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 	}
 
 	return X::Math::MagnitudeSqr(direction) > 0.0f;
+}
+bool TileMap::HitsBlockableObject(X::Math::Vector2& position)
+{
+	bool hasHit = false;
+	for (auto tile : _tiles[TileType::Wall])
+	{
+		if (X::Math::PointInRect(position, tile.GetRect()))
+		{
+			hasHit = true;
+			break;
+		}
+	}
+
+	return hasHit;
 }
