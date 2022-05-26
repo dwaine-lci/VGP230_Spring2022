@@ -54,11 +54,11 @@ bool Tile::IsWalkable()
 {
 	return _data.tileType == TileType::Walkable;
 }
-const X::Math::Vector2& Tile::GetPosition()
+const X::Math::Vector2& Tile::GetPosition() const
 {
 	return _data.position;
 }
-const X::Math::Rect& Tile::GetRect()
+const X::Math::Rect& Tile::GetRect() const
 {
 	return _data.rect;
 }

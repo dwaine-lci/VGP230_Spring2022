@@ -72,6 +72,11 @@ void TileMap::Cleanup()
 	_tiles.clear();
 }
 
+const std::vector<Tile>& TileMap::GetTilesOfType(TileType tileType)
+{
+	return _tiles[tileType];
+}
+
 void TileMap::ReloadMap()
 {
 	const char fileName[255] = "./level.lvl";

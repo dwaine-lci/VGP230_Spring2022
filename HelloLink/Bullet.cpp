@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "Game.h";
 #include "TileMap.h";
+#include "Enemy.h"
 
 Bullet::Bullet()
 {
@@ -47,6 +48,17 @@ void Bullet::Update(float deltaTime)
 		if (TileMap::Get()->HitsBlockableObject(_position))
 		{
 			_lifeTime = 0.0f;
+		}
+		std::vector<Enemy>& enemies = Game::Get()->GetEnemies();
+		for (int i = 0; i < enemies.size(); ++i)
+		{
+			Enemy& enemy = enemies[i];
+			if (enemy.IsAlive() && enemy.CheckHit(_position))
+			{
+				_lifeTime = 0.0f;
+				enemy.OnHit(1);
+				break;
+			}
 		}
 	}
 }
