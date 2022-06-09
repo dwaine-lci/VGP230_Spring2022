@@ -29,8 +29,8 @@ void Game::Init()
 }
 void Game::Update(float deltaTime)
 {
-	TileMap::Get()->Update(deltaTime);
 	_player.Update(deltaTime);
+	TileMap::Get()->Update(deltaTime);
 }
 void Game::Render()
 {

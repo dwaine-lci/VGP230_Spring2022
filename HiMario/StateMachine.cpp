@@ -36,3 +36,7 @@ void StateMachine::Cleanup()
 	}
 	_states.clear();
 }
+PlayerStates StateMachine::GetActiveState()
+{
+	return _currentState;
+}

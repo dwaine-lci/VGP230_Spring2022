@@ -14,6 +14,7 @@ public:
 	void Init();
 	void UpdateState(Player* player, float deltaTime);
 	void Cleanup();
+	PlayerStates GetActiveState();
 
 private:
 	PlayerStates _currentState;

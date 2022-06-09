@@ -116,10 +116,8 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 	bool checkX = true;
 	float offsetX = 0.0f;
 	float offsetY = 0.0f;
-	float tileWidth = X::GetSpriteWidth(cMapTextures[0]);
-	float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
-	float totalWidth = tileWidth * (float)_tileCols;
-	float totalHeight = tileHeight * (float)_tileRows;
+	float totalWidth = GetTotalWidth();
+	float totalHeight = GetTotalHeight();
 	X::Math::Rect moveRect;
 	X::Math::Rect mapRect(0.0f, 0.0f, totalWidth, totalHeight);
 	for (int i = 0; i < 2; ++i)
@@ -148,7 +146,9 @@ bool TileMap::CanMoveToDirection(const X::Math::Rect& movingObject, X::Math::Vec
 
 		for (auto tile : _tiles[TileType::Platform])
 		{
-			const X::Math::Rect& tileRect = tile.GetRect();
+			X::Math::Rect tileRect = tile.GetRect();
+			tileRect.min += _offset;
+			tileRect.max += _offset;
 			if (!tile.IsWalkable() && X::Math::Intersect(moveRect, tileRect))
 			{
 				if (checkX)
@@ -211,7 +211,10 @@ bool TileMap::HitsBlockableObject(X::Math::Vector2& position)
 	bool hasHit = false;
 	for (auto tile : _tiles[TileType::Platform])
 	{
-		if (X::Math::PointInRect(position, tile.GetRect()))
+		X::Math::Rect tileRect = tile.GetRect();
+		tileRect.min += _offset;
+		tileRect.max += _offset;
+		if (X::Math::PointInRect(position, tileRect))
 		{
 			hasHit = true;
 			break;
@@ -219,4 +222,23 @@ bool TileMap::HitsBlockableObject(X::Math::Vector2& position)
 	}
 
 	return hasHit;
+}
+float TileMap::GetTotalWidth()
+{
+	float tileWidth = X::GetSpriteWidth(cMapTextures[0]);
+	return tileWidth * (float)_tileCols;
+}
+float TileMap::GetTotalHeight()
+{
+	float tileHeight = X::GetSpriteHeight(cMapTextures[0]);
+	return tileHeight * (float)_tileRows;
+}
+void TileMap::SetOffset(const X::Math::Vector2& offset)
+{
+	_offset = offset;
+}
+
+const X::Math::Vector2& TileMap::GetOffset()
+{
+	return _offset;
 }

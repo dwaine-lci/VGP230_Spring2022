@@ -71,10 +71,18 @@ PlayerStates WalkState::Update(Player* player, float deltaTime)
 		if (newVel.x > 0.0f)
 		{
 			newVel.x -= cBreakAccel * deltaTime;
+			if (newVel.x < 0.0f)
+			{
+				newVel.x = 0.0f;
+			}
 		}
 		else
 		{
 			newVel.x += cBreakAccel * deltaTime;
+			if (newVel.x > 0.0f)
+			{
+				newVel.x = 0.0f;
+			}
 		}
 	}
 	newVel.y = cGravity * deltaTime;

@@ -2,6 +2,7 @@
 #include <XEngine.h>
 #include "Enums.h"
 #include "StateMachine.h"
+#include "AnimationController.h"
 
 class Player
 {
@@ -19,7 +20,8 @@ public:
 	void SetVelocity(const X::Math::Vector2& velocity);
 
 private:
-	X::TextureId _textureId;
+	AnimationController _animationController;
+	X::Flip _flip;
 	X::Math::Vector2 _position;
 	X::Math::Vector2 _velocity;
 	X::Math::Vector2 _desiredMoveDistance;

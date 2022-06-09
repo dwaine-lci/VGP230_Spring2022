@@ -1,4 +1,5 @@
 #include "Tile.h"
+#include "TileMap.h"
 
 Tile::Tile()
 {
@@ -21,7 +22,8 @@ void Tile::Update(float deltaTime)
 
 void Tile::Render()
 {
-	X::DrawSprite(_data.textureId, _data.position);
+	const X::Math::Vector2& tileMapOffset = TileMap::Get()->GetOffset();
+	X::DrawSprite(_data.textureId, _data.position + tileMapOffset);
 }
 
 int Tile::GetX()
