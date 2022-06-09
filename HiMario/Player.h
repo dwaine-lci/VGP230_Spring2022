@@ -26,4 +26,6 @@ private:
 	X::Math::Vector2 _velocity;
 	X::Math::Vector2 _desiredMoveDistance;
 	StateMachine _stateMachine;
+
+	Animation _bloodSplatter;
 };

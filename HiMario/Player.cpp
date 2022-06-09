@@ -41,10 +41,15 @@ void Player::Init()
 	_animationController.AddAnimation((int)PlayerStates::Fall, animFall);
 
 	_animationController.PlayAnimation((int)PlayerStates::Idle);
+
+	_bloodSplatter.Init(frameRate, 128.0f, 128.0f, 4, 4, 16);
+	_bloodSplatter.SetFrame(0, X::LoadTexture("blood_effect.png"));
+	_bloodSplatter.Play();
 }
 
 void Player::Update(float deltaTime)
 {
+	_bloodSplatter.Update(deltaTime);
 	const X::TextureId& activeTexture = _animationController.GetCurrentAnimationTexture();
 	float halfWidth = X::GetSpriteWidth(activeTexture) * 0.5f;
 	float halfHeight = X::GetSpriteHeight(activeTexture) * 0.5f;
@@ -124,6 +129,9 @@ void Player::Render()
 
 	X::DrawSprite(activeTexture, _position, X::Pivot::Center, _flip);
 	X::DrawScreenRect(playerRect, X::Colors::Green);
+
+	X::Math::Vector2 offset(0.0f, 100.0f);
+	X::DrawSprite(_bloodSplatter.GetCurrentFrameTexture(), _bloodSplatter.GetFrameRect(), _position + offset);
 }
 
 void Player::Cleanup()
